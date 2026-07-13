@@ -63,6 +63,18 @@ build/psgen-yosys.sv: $(PSGEN) $(PSGEN_SRCS) Makefile
 	mkdir -p build
 	$(PSGEN) $(addprefix -path ,$(PSGEN_SRCS)) $(PSGEN_FLAGS) -sv-out build/psgen-yosys.sv -clocking -covers -cover-assert -step-prefix
 
+build/ibex_top.mlir: build/psgen-yosys.sv build/fusesoc build/ibexspec.sv check
+	circt-verilog --top ibex_top -DSYNTHESIS -DYOSYS \
+		--Xslang="-Fbuild/fusesoc/lowrisc_ibex_ibex_formal_0.1/default-vcs/lowrisc_ibex_ibex_formal_0.1.scr" \
+		build/ibexspec.sv spec/stub.sv spec/spec_api.sv check/peek/alt_lsu.sv check/top.sv \
+		-I $(LOWRISC_SAIL_SRC)/lib/sv/ --single-unit -o build/all.mlir
+
+build/all.mlir: build/psgen-yosys.sv build/fusesoc build/ibexspec.sv check
+	circt-verilog --top top -DSYNTHESIS -DYOSYS \
+		--Xslang="-Fbuild/fusesoc/lowrisc_ibex_ibex_formal_0.1/default-vcs/lowrisc_ibex_ibex_formal_0.1.scr" \
+		build/ibexspec.sv spec/stub.sv spec/spec_api.sv check/peek/alt_lsu.sv check/top.sv \
+		-I $(LOWRISC_SAIL_SRC)/lib/sv/ --single-unit -o build/all.mlir
+
 # The aiger file for the OSS flow, using the yosys_formal/* plugins. The main yosys script is in build_all.ys
 build/all.aig: build/psgen-yosys.sv build/fusesoc build/ibexspec.sv check build_all.ys $(LOWRISC_YOSYS_SLANG) build/yosys_formal.so
 	yosys -m $(LOWRISC_YOSYS_SLANG) -m build/yosys_formal.so -v 1 -s <(cat ./build_all.ys | sed "s|LOWRISC_SAIL_SRC|$(LOWRISC_SAIL_SRC)|g")

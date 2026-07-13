@@ -12,6 +12,13 @@ Getting started:
 - `cd dv/formal`
 
 ### Reproducible Build
+#### With circt-verilog:
+
+- `nix develop .#oss-dev`. This may need `--extra-experimental-features nix-command --extra-experimental-features flakes`
+- `circt-verilog` should be in `PATH`
+- `make build/ibex_top.mlir` to build the Ibex top without the checkers
+- `make build/all.mlir` to build the Ibex top with the verification
+
 #### With Jasper:
 This flow is intended for users who wish to run the formal flow as-is using the pinned external dependencies (psgen, sail, riscv-sail etc.)
 
