@@ -18,6 +18,7 @@ module prim_clock_gating (
       en_latch = en_i | test_en_i;
     end
   end
-  assign clk_o = en_latch & clk_i;
+  // assign clk_o = en_latch & clk_i;
+  assign clk_o = clk_i;
 
 endmodule

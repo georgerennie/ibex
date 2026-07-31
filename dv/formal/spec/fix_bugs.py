@@ -43,6 +43,8 @@ c = c.replace("sail_reached_unreachable = 1;", "if (!sail_reached_unreachable) b
 c = c.replace("module sail_ibexspec(", "module sail_ibexspec(\n    output logic sail_reached_unreachable,\n    output logic [31:0] sail_reached_unreachable_loc,")
 c = c.replace("logic sail_reached_unreachable;", "")
 c = c.replace("logic [31:0] sail_reached_unreachable_loc;", "")
+c = c.replace("$display(\"TEST START\");", "")
+c = c.replace("$display(\"TEST END\");", "")
 
 Path("build/ibexspec.sv").write_text(c)
 
