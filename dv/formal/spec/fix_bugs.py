@@ -49,4 +49,10 @@ c = c.replace("$display(\"TEST END\");", "")
 Path("build/ibexspec.sv").write_text(c)
 
 c = Path("build/sail_genlib_ibexspec.sv").read_text()
-Path("build/sail_genlib_ibexspec.sv").write_text(S.replace("struct", "struct packed") + "\n" + c)
+c = S.replace("struct", "struct packed") + "\n" + c
+
+c = c.replace("logic [127:0] sail_cycle_count_var;", "")
+c = c.replace("return sail_cycle_count_var;", "")
+c = c.replace("sail_cycle_count_var = sail_cycle_count_var + 1;", "")
+
+Path("build/sail_genlib_ibexspec.sv").write_text(c)
